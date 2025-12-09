@@ -29,7 +29,7 @@ for year in years:
 
     unified_df = pd.concat([gen_df, res_df], ignore_index=True)
     unified_df.drop_duplicates(inplace=True)
-    unified_df.to_csv(export_path, index=False, encoding="utf-8")
+    unified_df.to_csv(export_path, index=False, encoding="utf-8", parse_date="%Y-%m-%d")
 
     end_time = datetime.now()
     elapsed_time = end_time - start_time
