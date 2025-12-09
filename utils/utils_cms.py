@@ -47,4 +47,70 @@ def read_cms_files(file_path: str, type: str) -> pd.DataFrame:
     return df
 
 def clean_cms_files(df: pd.DataFrame, type: str) -> pd.DataFrame:
-    pass
+    df.columns = [col.strip() for col in df.columns]
+
+    # FILTER PAYMENT NATURES SUCH AS FOOD AND DRINKS UNRELATED TO KOLINK
+    if type.lower().startswith("g"):
+        useful_natures = [
+            "Compensation for services other than consulting, including serving as faculty or as a speaker at a venue other than a continuing education program",
+            "Consulting Fee",
+            "Education",
+            "Honoraria",
+            "Royalty or License",
+            "Compensation for serving as faculty or as a speaker for a medical education program",
+            "Long term medical supply or device loan",
+            "Grant",
+        ]
+
+        df = df[df['nature_of_payment_or_transfer_of_value'].str.lower().isin([x.lower() for x in useful_natures])]
+        df.drop(columns=["nature_of_payment_or_transfer_of_value"], inplace=True)
+
+        # ASSIGN TYPE TO SHOW DATA ORIGINS
+        df["transaction_type"] = "general"
+    else:
+        df["transaction_type"] = "research"
+
+    # DROP NA IF IMPORTANT VALUES MISSING, EX. CANNOT LINK TO PHYSICIANS
+    subset = [
+        "covered_recipient_npi",
+        "total_amount_of_payment_usdollars",
+        "date_of_payment",
+    ]
+    df = df.dropna(subset=subset)
+
+    # LIGHT CLEANING
+    df["covered_recipient_first_name"] = df["covered_recipient_first_name"].apply(normalize_names)
+    df["covered_recipient_last_name"] = df["covered_recipient_last_name"].apply(normalize_names)
+
+    df["recipient_city"] = df["recipient_city"].str.strip().str.title()
+    df["recipient_state"] = df["recipient_state"].str.strip().str.upper()
+
+    df["applicable_manufacturer_or_applicable_gpo_making_payment_name"] = df["applicable_manufacturer_or_applicable_gpo_making_payment_name"].str.strip()
+
+    # ENSURE COLUMN ORDER
+    column_order = [
+        "covered_recipient_profile_id",
+        "covered_recipient_npi",
+        "covered_recipient_first_name",
+        "covered_recipient_last_name",
+        "recipient_city",
+        "recipient_state",
+        "applicable_manufacturer_or_applicable_gpo_making_payment_id",
+        "applicable_manufacturer_or_applicable_gpo_making_payment_name",
+        "name_of_drug_or_biological_or_device_or_medical_supply_1",
+        "total_amount_of_payment_usdollars",
+        "date_of_payment",
+        "record_id",
+        "program_year",
+        "transaction_type"
+    ]
+    df = df[column_order]
+
+    return df
+
+def normalize_names(name: str) -> str:
+    name = name.strip()
+    if name.isupper():
+        name = name.title()
+
+    return name
