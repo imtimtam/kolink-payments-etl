@@ -4,7 +4,7 @@ from pathlib import Path
 
 from utils.utils_cms import read_cms_files, clean_cms_files
 
-years = range(2018, 2024)
+years = range(2018, 2025)
 
 for year in years:
     start_time = datetime.now()
@@ -18,7 +18,7 @@ for year in years:
         print(f"Research payments file path not found at: {res_file}")
         continue
 
-    export_path = Path(f"./exports/cms_unified_{year}.csv")
+    export_path = Path(f"./exports/cms_unified_{year}_test.csv")
     export_path.parent.mkdir(parents=True, exist_ok=True)
 
     gen_df = read_cms_files(gen_file, "g")
@@ -29,7 +29,7 @@ for year in years:
 
     unified_df = pd.concat([gen_df, res_df], ignore_index=True)
     unified_df.drop_duplicates(inplace=True)
-    unified_df.to_csv(export_path, index=False, encoding="utf-8", parse_date="%Y-%m-%d")
+    unified_df.to_csv(export_path, index=False, encoding="utf-8", date_format="%Y-%m-%d")
 
     end_time = datetime.now()
     elapsed_time = end_time - start_time
