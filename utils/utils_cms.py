@@ -35,6 +35,7 @@ def read_cms_files(file_path: str, type: str) -> pd.DataFrame:
         "Name_of_Drug_or_Biological_or_Device_or_Medical_Supply_1" : "object",
 
         "Total_Amount_of_Payment_USDollars" : "Float64",
+        "Date_of_Payment" : "object",
         "Record_ID" : "Int64",
         "Program_Year" : "Int64",
     }
@@ -87,6 +88,8 @@ def clean_cms_files(df: pd.DataFrame, type: str) -> pd.DataFrame:
     df.loc[:,"recipient_state"] = df["recipient_state"].str.strip().str.upper()
 
     df.loc[:,"applicable_manufacturer_or_applicable_gpo_making_payment_name"] = df["applicable_manufacturer_or_applicable_gpo_making_payment_name"].str.strip()
+
+    df.loc[:,"date_of_payment"] = pd.to_datetime(df["date_of_payment"], errors="coerce")
 
     # ENSURE COLUMN ORDER
     column_order = [
