@@ -74,18 +74,18 @@ def clean_cms_files(df: pd.DataFrame, type: str) -> pd.DataFrame:
         df.drop(columns=["nature_of_payment_or_transfer_of_value"], inplace=True)
 
         # ASSIGN TYPE TO SHOW DATA ORIGINS
-        df["transaction_type"] = "general"
+        df.loc[:,"transaction_type"] = "general"
     else:
-        df["transaction_type"] = "research"
+        df.loc[:,"transaction_type"] = "research"
 
     # LIGHT CLEANING
-    df["covered_recipient_first_name"] = df["covered_recipient_first_name"].apply(normalize_names)
-    df["covered_recipient_last_name"] = df["covered_recipient_last_name"].apply(normalize_names)
+    df.loc[:,"covered_recipient_first_name"] = df["covered_recipient_first_name"].apply(normalize_names)
+    df.loc[:,"covered_recipient_last_name"] = df["covered_recipient_last_name"].apply(normalize_names)
 
-    df["recipient_city"] = df["recipient_city"].str.strip().str.title()
-    df["recipient_state"] = df["recipient_state"].str.strip().str.upper()
+    df.loc[:,"recipient_city"] = df["recipient_city"].str.strip().str.title()
+    df.loc[:,"recipient_state"] = df["recipient_state"].str.strip().str.upper()
 
-    df["applicable_manufacturer_or_applicable_gpo_making_payment_name"] = df["applicable_manufacturer_or_applicable_gpo_making_payment_name"].str.strip()
+    df.loc[:,"applicable_manufacturer_or_applicable_gpo_making_payment_name"] = df["applicable_manufacturer_or_applicable_gpo_making_payment_name"].str.strip()
 
     # ENSURE COLUMN ORDER
     column_order = [
