@@ -18,7 +18,7 @@ for year in years:
         print(f"Research payments file path not found at: {res_file}")
         continue
 
-    export_path = Path(f"./exports/cms_unified_{year}_test.csv")
+    export_path = Path(f"./exports/cms_unified_{year}.csv")
     export_path.parent.mkdir(parents=True, exist_ok=True)
 
     gen_df = read_cms_files(gen_file, "g")
