@@ -6,8 +6,8 @@ from utils.utils_cms import read_cms_files, clean_cms_files
 years = range(2018, 2024)
 
 for year in years:
-    gen_file = Path(f"../data/general_payments/cms_general_{year}.csv")
-    res_file = Path(f"../data/research_payments/cms_research_{year}.csv")
+    gen_file = Path(f"./data/general_payments") / f"cms_general_{year}.csv"
+    res_file = Path(f"./data/research_payments") / f"cms_research_{year}.csv"
 
     if not gen_file.exists():
         print(f"General payments file path not found at: {gen_file}")
@@ -26,6 +26,7 @@ for year in years:
     res_df = clean_cms_files(res_df, "r")
 
     unified_df = pd.concat([gen_df, res_df], ignore_index=True)
+    unified_df.drop_duplicates(inplace=True)
     unified_df.to_csv(export_path, index=False, encoding="utf-8")
 
     print(f"Year {year} processed and saved to {export_path}")
