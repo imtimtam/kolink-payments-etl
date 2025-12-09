@@ -76,6 +76,7 @@ def clean_cms_files(df: pd.DataFrame, type: str) -> pd.DataFrame:
         # ASSIGN TYPE TO SHOW DATA ORIGINS
         df.loc[:,"transaction_type"] = "general"
     else:
+        df = df.copy()
         df.loc[:,"transaction_type"] = "research"
 
     # LIGHT CLEANING
