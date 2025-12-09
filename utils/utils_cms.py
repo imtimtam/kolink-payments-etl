@@ -47,7 +47,15 @@ def read_cms_files(file_path: str, type: str) -> pd.DataFrame:
     return df
 
 def clean_cms_files(df: pd.DataFrame, type: str) -> pd.DataFrame:
-    df.columns = [col.strip() for col in df.columns]
+    df.columns = [col.strip().lower() for col in df.columns]
+
+    # DROP NA IF IMPORTANT VALUES MISSING, EX. CANNOT LINK TO PHYSICIANS
+    subset = [
+        "covered_recipient_npi",
+        "total_amount_of_payment_usdollars",
+        "date_of_payment",
+    ]
+    df = df.dropna(subset=subset)
 
     # FILTER PAYMENT NATURES SUCH AS FOOD AND DRINKS UNRELATED TO KOLINK
     if type.lower().startswith("g"):
@@ -62,21 +70,13 @@ def clean_cms_files(df: pd.DataFrame, type: str) -> pd.DataFrame:
             "Grant",
         ]
 
-        df = df[df['nature_of_payment_or_transfer_of_value'].str.lower().isin([x.lower() for x in useful_natures])]
+        df = df[df['nature_of_payment_or_transfer_of_value'].str.lower().isin([x.lower() for x in useful_natures])].copy()
         df.drop(columns=["nature_of_payment_or_transfer_of_value"], inplace=True)
 
         # ASSIGN TYPE TO SHOW DATA ORIGINS
         df["transaction_type"] = "general"
     else:
         df["transaction_type"] = "research"
-
-    # DROP NA IF IMPORTANT VALUES MISSING, EX. CANNOT LINK TO PHYSICIANS
-    subset = [
-        "covered_recipient_npi",
-        "total_amount_of_payment_usdollars",
-        "date_of_payment",
-    ]
-    df = df.dropna(subset=subset)
 
     # LIGHT CLEANING
     df["covered_recipient_first_name"] = df["covered_recipient_first_name"].apply(normalize_names)
@@ -109,8 +109,9 @@ def clean_cms_files(df: pd.DataFrame, type: str) -> pd.DataFrame:
     return df
 
 def normalize_names(name: str) -> str:
-    name = name.strip()
-    if name.isupper():
-        name = name.title()
+    if isinstance(name, str):
+        name = name.strip()
+        if name.isupper():
+            name = name.title()
 
-    return name
+        return name
