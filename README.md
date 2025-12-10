@@ -1,6 +1,6 @@
 # CMS Open Payments ETL
 
-This is an file-based ETL for ingesting, cleaning and unifying CMS Open Payments for General and Research yearly payments. Built with Python, Pandas, and simple file-based workflows during an internship dedicated towards an MVP about linking key opinion leaders.
+This is a file-based ETL for ingesting, cleaning and unifying CMS Open Payments for General and Research yearly payments. Built with Python, Pandas, and simple file-based workflows during an internship dedicated towards an MVP about linking key opinion leaders.
 
 ## Features
 
