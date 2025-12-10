@@ -5,21 +5,15 @@ This is an file-based ETL for ingesting, cleaning and unifying CMS Open Payments
 ## Features
 
 - Loads CMS General + Research payments per year
-
 - Cleans and normalizes all fields
-
 - Drops invalid rows and removes duplicates
-
 - Adds a standardized `transaction_type` column
-
 - Merges datasets into a unified table per year
-
 - Logs runtime per file
-
 - Outputs cleaned CSV files ready for downstream analysis
 
 ## Project Structure
-
+```
 kolink-payments-etl/
 ├── data/
 │   ├── general_payments/           # Raw download location for general payment CSVs to be cleaned and merged
@@ -36,7 +30,7 @@ kolink-payments-etl/
 ├── main.py                         # Runs the ETL pipeline for all years
 ├── requirements.txt
 └── README.md
-
+```
 ## Cleaning Rules
 - Convert all column names to lowercase
 - Validate and clean fields
@@ -54,7 +48,7 @@ kolink-payments-etl/
 
 ## Running the Pipeline
 The ETL pipeline is executed via the main script:
-        python main.py
+```python main.py```
 
 The script automatically reads the CMS general and research payment files for the variable years in main. Paths are set internally in the script.
 
